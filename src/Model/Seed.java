@@ -18,8 +18,6 @@ public class Seed {
         this.dnLimite = dnLimite;
     }
 
-
-
     public int getSeedId() {
         return seedId;
     }
