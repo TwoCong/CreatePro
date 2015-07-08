@@ -131,12 +131,26 @@ public class Db {
 
         }
         return true;
-    }catch(Exception e){
-        e.printStackTrace();
-        return false;
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
+    //得到url表中所有的url
+    public ArrayList getAllUrl() {
+        try{
+            pstmt=conn.prepareStatement("select url from URL");
+            ResultSet rs=pstmt.executeQuery();
+            ArrayList al=new ArrayList();
+            while(rs.next()){
+                al.add(rs.getString(1));
+            }
+            return al;
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
-
 
 
 }
