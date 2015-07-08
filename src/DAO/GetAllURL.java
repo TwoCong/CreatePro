@@ -11,6 +11,8 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,9 +24,27 @@ import java.util.regex.Pattern;
  */
 public class GetAllURL {
 
-    private ArrayList<URL> URLListFormSeed;
+    private ArrayList<URL> URLListFormSeed;  //seed表的所有url
+    private Queue<Seed> seeds;//对象队列：存储每个seeds对象
+    private  Queue<Seed> seedsForCon;
     public ArrayList<URL> getURLListFormSeed() {
         return URLListFormSeed;
+    }
+
+    public Queue<Seed> getSeeds() {
+        return seeds;
+    }
+
+    public Queue<Seed> getSeedsForCon() {
+        return seedsForCon;
+    }
+
+    public void setSeedsForCon(Queue<Seed> seedsForCon) {
+        this.seedsForCon = seedsForCon;
+    }
+
+    public void setSeeds(Queue<Seed> seeds) {
+        this.seeds = seeds;
     }
 
     public void setURLListFormSeed(ArrayList<URL> URLListFormSeed) {
@@ -34,42 +54,21 @@ public class GetAllURL {
     public GetAllURL(){
         super();
         this.URLListFormSeed=new ArrayList<URL>();
-
+        this.seedsForCon=new LinkedList<Seed>();
+        this.seeds=new LinkedList<Seed>();
     }
-
-
-//    ArrayList allSeedURL=db.getAllSeedUrl();
-//    boolean result=insertAllURL(allSeedURL);
-
-
     /**
      *将所有的URLList存储到URL表中
      *
      */
-    public boolean insertAllURL(ArrayList allSeedURL){
-        Db db=new Db();
-        try{
-            Iterator iter = allSeedURL.iterator();
-            ArrayList<URL> URLList=new ArrayList<URL>();
-            while (iter.hasNext()) {
-                String seedURL = iter.next().toString();
-
-                URLList=traverse(seedURL);
-
-                db.insertURL(URLList);
-            }
-            return true;
-        }catch(Exception e){
-            e.printStackTrace();
-            return false;
-        }
-    }
 
     // judge url
-    private boolean isURL(String url) {
+    private boolean isURL(String url,String dnLimite) {
         try {
-
-            Pattern pattern = Pattern.compile("^[a-zA-z]+://[^\\s]*");
+            String res=dnLimite;
+            String rex="^[a-zA-Z]+://[^\\s]*"+res+"[^\\s]*";
+            //Pattern pattern = Pattern.compile("^[a-zA-z]+://[^\\s]*");
+            Pattern pattern = Pattern.compile(rex);
             Matcher matcher = pattern.matcher(url);
             if (matcher.matches()) {
                 return true;
@@ -82,42 +81,70 @@ public class GetAllURL {
         }
     }
 
+
     /**
      *遍历seedURL中的所有超链接。
      * 返回   URLList
      *
      */
-    public ArrayList<URL> traverse(String seedURL)  {
+    public ArrayList<URL> traverse(ArrayList<Seed> seedList)  {
+        Db db=new Db();
+        String seedURL="";
+        int seedId=0;
+        String seedSiteName="";
+        String seedDnLimite="";  //域名限制
+        Iterator iterator=seedList.iterator();
+        while (iterator.hasNext()){
+            Seed seed=(Seed)iterator.next();
+            seedURL=seed.getURL();
+            seedId=seed.getSeedId();
+            seedSiteName=seed.getSiteName();
+            seedDnLimite=seed.getDnLimite();   //获取到了当前seed的所有信息。
+            this.getSeeds().add(seed);     // 加入到seed队列中,便于后面进行一个一个取出。
 
+        }
+        while(!this.getSeeds().isEmpty()){
             boolean flag=true;
             Document document=null;
+
             try {
-                 document = Jsoup.connect(seedURL).timeout(10000).get();
-            } catch (Exception e) {
+                Seed seed=this.getSeeds().poll();
+                seedURL=seed.getURL();
+                seedId=seed.getSeedId();
+                seedSiteName=seed.getSiteName();
+                seedDnLimite=seed.getDnLimite();
+                document=Jsoup.connect(seedURL).timeout(10000).get();
+            }catch (Exception e){
                 e.printStackTrace();
                 flag=false;
             }
-
             if(flag){
-                Elements elements=document.select("a.linkfont1");
+                Elements elements=document.select("a.Normal");
                 for (Element e : elements){
                     String s=e.attr("abs:href");
 
-                    if (isURL(s)&&!getURLListFormSeed().contains(s)){
+                    if (isURL(s,seedDnLimite)&&!db.getAllUrl().contains(s)){
                         URL url=new URL();
                         url.setURL(s);
+                        url.setSeedId(seedId);
+
+                        //
+                        //之后加入Docsize以及其他属性。
+                        //
                         this.getURLListFormSeed().add(url);
+                        db.insertURL(url);
                     }
                 }
 
             }
 
+        }
 
-        return this.getURLListFormSeed();
+
+    return this.getURLListFormSeed();
     }
-//    public ArrayList<URL> traverse(String seedURL){
-//        return null;
-//    }
+
+
 }
 
 

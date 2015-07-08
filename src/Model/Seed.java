@@ -7,8 +7,18 @@ public class Seed {
     private int seedId;
     private String URL;
     private String siteName;
-    private String restrict;
+    private String dnLimite;
     private byte status;
+
+    public String getDnLimite() {
+        return dnLimite;
+    }
+
+    public void setDnLimite(String dnLimite) {
+        this.dnLimite = dnLimite;
+    }
+
+
 
     public int getSeedId() {
         return seedId;
@@ -43,11 +53,5 @@ public class Seed {
         this.siteName = siteName;
     }
 
-    public String getRestrict() {
-        return restrict;
-    }
 
-    public void setRestrict(String restrict) {
-        this.restrict = restrict;
-    }
 }

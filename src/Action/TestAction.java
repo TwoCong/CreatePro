@@ -6,6 +6,9 @@ import DB.Db;
 import Model.*;
 
 import com.opensymphony.xwork2.Action;
+
+import java.util.Iterator;
+
 /**
  * Created by Two_Cong on 15/07/07.
  */
@@ -14,13 +17,14 @@ public class TestAction implements Action {
 
         Db db=new Db();
         GetAllURL getAllURL=new GetAllURL();
-        boolean result=getAllURL.insertAllURL(db.getAllSeedUrl());
-        if(result) {
+        Iterator iterator=getAllURL.traverse(db.getAllSeed()).iterator();
+        if (iterator.hasNext()){
             return "success";
         }
         else{
-            return "error";
+            return  "error";
         }
+
     }
 }
 

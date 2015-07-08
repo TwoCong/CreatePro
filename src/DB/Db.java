@@ -50,7 +50,7 @@ public class Db {
                 seed.setSeedId(rs.getInt(1));
                 seed.setURL(rs.getString(2));
                 seed.setSiteName(rs.getString(3));
-                seed.setRestrict(rs.getString(4));
+                seed.setDnLimite(rs.getString(4));
                 seed.setStatus(rs.getByte(5));
                 seedList.add(seed);
             }
@@ -92,7 +92,7 @@ public class Db {
                 seed.setSeedId(rs.getInt(1));
                 seed.setURL(rs.getString(2));
                 seed.setSiteName(rs.getString(3));
-                seed.setRestrict(rs.getString(4));
+                seed.setDnLimite(rs.getString(4));
                 seed.setStatus(rs.getByte(5));
                 return seed;
             }
@@ -102,7 +102,20 @@ public class Db {
             return null;
         }
     }
-
+    //
+    //通过seedurl找到DNLIMITE
+    //
+    public String getURLRestrict(String seedURL) {
+        try{
+            pstmt=conn.prepareStatement("select DNLIMITE from seed where URL=?");
+            pstmt.setString(1, seedURL);
+            ResultSet rs=pstmt.executeQuery();
+            return rs.getString(1);
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     /*
      *对URL表进行的DB操作
@@ -111,12 +124,8 @@ public class Db {
      *
      */
 
-    public boolean insertURL(ArrayList<URL> URLList) {
+    public boolean insertURL(URL url) {
     try{
-        Iterator iter = URLList.iterator();
-        while(iter.hasNext()){
-            URL url=new URL();
-            url=(URL)iter.next();
             pstmt=conn.prepareStatement("insert into URL (SEEDID,URL,DOCSIZE,LASTCRAWLERTIME,CYCLE,URLVALUE,PAGECONTENTVALUE,URLSTATUS) values(?,?,?,?,?,?,?,?)");
             pstmt.setInt(1, url.getSeedId());
             pstmt.setString(2, url.getURL());
@@ -129,14 +138,17 @@ public class Db {
             pstmt.executeUpdate();
             pstmt.close();
 
-        }
+
         return true;
         }catch(Exception e){
             e.printStackTrace();
             return false;
         }
     }
+
+    //
     //得到url表中所有的url
+    //
     public ArrayList getAllUrl() {
         try{
             pstmt=conn.prepareStatement("select url from URL");
