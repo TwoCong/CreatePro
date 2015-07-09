@@ -17,7 +17,8 @@ public class TestAction implements Action {
 
         Db db=new Db();
         GetAllURL getAllURL=new GetAllURL();
-        Iterator iterator=getAllURL.traverse(db.getAllSeed()).iterator();
+        Iterator iterator=getAllURL.traverse(db.getAllURL()).iterator();
+
         if (iterator.hasNext()){
             return "success";
         }

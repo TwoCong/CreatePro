@@ -32,6 +32,33 @@ public class Db {
             return false;
         }
     }
+    /*
+     *将seed表中所有的url转移至URL表中
+     */
+    public  ArrayList<URL> sendSeedToURL(){
+        try{
+            getAllSeed();
+            ResultSet resultSet=pstmt.executeQuery();
+            ArrayList<URL> urlList=new ArrayList<URL>();
+            while(resultSet.next()){
+                URL url=new URL();
+                url.setSeedId(resultSet.getInt(1));
+                url.setURL(resultSet.getString(2));
+                url.setURLStatus(resultSet.getByte(5));
+                /*
+                 *来自seed表的条目(URL)还需要修改
+                 *Docsize,lastcrawlertime,cycle,urlvalue,pagecontentvalue  属性的值
+                 *之后再进行修改
+                 */
+                urlList.add(url);
+            }
+            return urlList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     /*
      *对Seed表进行DB操作
@@ -80,7 +107,6 @@ public class Db {
     //
     //
     //
-
 
     public Seed findSeed(int seedId){
         try{
@@ -143,6 +169,31 @@ public class Db {
         }catch(Exception e){
             e.printStackTrace();
             return false;
+        }
+    }
+    public ArrayList<URL> getAllURL(){
+        try{
+            pstmt=conn.prepareStatement("select * from URL ");
+            ResultSet rs=pstmt.executeQuery();
+            ArrayList<URL> URLList=new ArrayList<URL>();
+            while(rs.next()){
+                URL url=new URL();
+                url.setURLId(rs.getInt(1));
+                url.setSeedId(rs.getInt(2));
+                url.setURL(rs.getString(3));
+                url.setDocsize(rs.getInt(4));
+                url.setLastCrawlerTime(rs.getString(5));
+                url.setCycle(rs.getInt(6));
+                url.setURLValue(rs.getInt(7));
+                url.setPageContentValue(rs.getInt(8));
+                url.setURLStatus(rs.getInt(9));
+
+                URLList.add(url);
+            }
+            return URLList;
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
         }
     }
 
