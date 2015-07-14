@@ -32,32 +32,7 @@ public class Db {
             return false;
         }
     }
-    /*
-     *将seed表中所有的url转移至URL表中
-     */
-    public  ArrayList<URL> sendSeedToURL(){
-        try{
-            getAllSeed();
-            ResultSet resultSet=pstmt.executeQuery();
-            ArrayList<URL> urlList=new ArrayList<URL>();
-            while(resultSet.next()){
-                URL url=new URL();
-                url.setSeedId(resultSet.getInt(1));
-                url.setURL(resultSet.getString(2));
-                url.setURLStatus(resultSet.getByte(5));
-                /*
-                 *来自seed表的条目(URL)还需要修改
-                 *Docsize,lastcrawlertime,cycle,urlvalue,pagecontentvalue  属性的值
-                 *之后再进行修改
-                 */
-                urlList.add(url);
-            }
-            return urlList;
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
-    }
+
 
 
     /*
@@ -87,6 +62,52 @@ public class Db {
             return null;
         }
     }
+
+    /*
+    *将seed表中所有的url转移至URL表中
+    * 返回URL表 ArrayList<URL>
+    */
+    public  ArrayList<URL> sendSeedToURL(){
+        try{
+            getAllSeed();
+            ResultSet resultSet=pstmt.executeQuery();
+            while(resultSet.next()){
+                URL url=new URL();
+                url.setSeedId(resultSet.getInt(1));
+                url.setURL(resultSet.getString(2));
+                url.setURLStatus(resultSet.getByte(5));
+
+                /*
+                 *来自seed表的条目(URL)还需要修改
+                 *Docsize,lastcrawlertime,cycle,urlvalue,pagecontentvalue  属性的值
+                 *之后再进行修改
+                 */
+                insertURL(url);             //插进URL表中
+            }
+            getAllURL();
+            ResultSet resultSet1=pstmt.executeQuery();
+            ArrayList<URL> urlList=new ArrayList<URL>();
+            while(resultSet1.next()){
+                URL url1=new URL();
+                url1.setSeedId(resultSet1.getInt(2));
+                url1.setURL(resultSet1.getString(3));
+                url1.setDocsize(resultSet1.getInt(4));
+                url1.setLastCrawlerTime(resultSet1.getString(5));
+                url1.setCycle(resultSet1.getInt(6));
+                url1.setURLValue(resultSet1.getInt(7));
+                url1.setPageContentValue(resultSet1.getInt(8));
+                url1.setURLStatus(resultSet1.getInt(9));
+            }
+
+
+
+            return urlList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     //
     //获取Status=0的网页的URL
     //

@@ -16,6 +16,7 @@ public class TestAction implements Action {
     public String execute() throws Exception{
 
         Db db=new Db();
+        db.sendSeedToURL();
         GetAllURL getAllURL=new GetAllURL();
         Iterator iterator=getAllURL.traverse(db.getAllURL()).iterator();
 
