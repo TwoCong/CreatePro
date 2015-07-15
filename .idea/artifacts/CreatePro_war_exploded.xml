@@ -10,6 +10,7 @@
         <element id="directory" name="lib">
           <element id="library" level="project" name="Struts 2" />
           <element id="library" level="project" name="jsoup-1.8.1" />
+          <element id="library" level="project" name="commons-codec-1.9" />
         </element>
       </element>
     </root>

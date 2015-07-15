@@ -194,7 +194,7 @@ public class Db {
     }
     public ArrayList<URL> getAllURL(){
         try{
-            pstmt=conn.prepareStatement("select * from URL ");
+            pstmt=conn.prepareStatement("select * from URL WHERE URLSTATUS=0");
             ResultSet rs=pstmt.executeQuery();
             ArrayList<URL> URLList=new ArrayList<URL>();
             while(rs.next()){
@@ -217,6 +217,30 @@ public class Db {
             return null;
         }
     }
+
+    /*
+     * set URLStatus=1
+     */
+    public void updateURLStatus(URL url){
+        try{
+            pstmt=conn.prepareStatement("update URL set SEEDID=?,URL=?,DOCSIZE=?,LASTCRAWLERTIME=?,CYCLE=?,URLVALUE=?,PAGECONTENTVALUE=?,URLSTATUS=?");
+            pstmt.setInt(1, url.getSeedId());
+            pstmt.setString(2, url.getURL());
+            pstmt.setInt(3, url.getDocsize());
+            pstmt.setString(4, url.getLastCrawlerTime());
+            pstmt.setInt(5, url.getCycle());
+            pstmt.setInt(6, url.getURLValue());
+            pstmt.setInt(7, url.getPageContentValue());
+            pstmt.setInt(8,1);
+            pstmt.executeUpdate();
+            pstmt.close();
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     //
     //得到url表中所有的url

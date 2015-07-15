@@ -112,6 +112,7 @@ public class GetAllURL {
             try {
 
                 URL url=this.getURLs().poll();
+
                 iurlSeedId=url.getSeedId();
                 iurlStatus=url.getURLStatus();
                 idocSize=url.getDocsize();
@@ -121,7 +122,9 @@ public class GetAllURL {
                 slastCrawlerTime=url.getLastCrawlerTime();
                 surl=url.getURL();
 
-                document=Jsoup.connect(surl).timeout(10000).get();
+
+                document=Jsoup.connect(surl).timeout(100000).get();
+                db.updateURLStatus(url);
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -135,6 +138,7 @@ public class GetAllURL {
                         URL url=new URL();
                         url.setURL(s);
                         url.setSeedId(iurlSeedId);
+
                         /*
                          *修改Docsize，lastcrawlertime，urlstatus属性
                          */

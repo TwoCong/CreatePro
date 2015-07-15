@@ -16,17 +16,17 @@ public class TestAction implements Action {
     public String execute() throws Exception{
 
         Db db=new Db();
-        db.sendSeedToURL();
         GetAllURL getAllURL=new GetAllURL();
-        Iterator iterator=getAllURL.traverse(db.getAllURL()).iterator();
-
-        if (iterator.hasNext()){
-            return "success";
+        db.sendSeedToURL();
+        if (!db.getAllURL().isEmpty()){
+           getAllURL.traverse(db.getAllURL());
+            return  "success";
         }
-        else{
-            return  "error";
-        }
-
+        return "error";
+//        while (!db.getAllURL().isEmpty()){
+//            getAllURL.traverse(db.getAllURL());
+//        }
+//        return "success";
     }
 }
 
