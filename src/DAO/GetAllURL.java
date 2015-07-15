@@ -24,20 +24,15 @@ import java.util.regex.Pattern;
  */
 public class GetAllURL {
 
-    private ArrayList<URL> URLListFormSeed;  //seed表的所有url
-    private Queue<Seed> seeds;//对象队列：存储每个seeds对象
-    private  Queue<Seed> seedsForCon;
-    private Queue<URL>  URLs;
-    public ArrayList<URL> getURLListFormSeed() {
-        return URLListFormSeed;
+
+    private Queue<URL>  URLs;  //单个网页中的所有超链接
+    private ArrayList<URL> URLListFormAHref;  //所有A[href]的url
+    public ArrayList<URL> getURLListFormAHref() {
+        return URLListFormAHref;
     }
 
-    public Queue<Seed> getSeeds() {
-        return seeds;
-    }
-
-    public Queue<Seed> getSeedsForCon() {
-        return seedsForCon;
+    public void setURLListFormAHref(ArrayList<URL> URLListFormAHref) {
+        this.URLListFormAHref = URLListFormAHref;
     }
 
     public Queue<URL> getURLs() {
@@ -48,23 +43,11 @@ public class GetAllURL {
         this.URLs = URLs;
     }
 
-    public void setSeedsForCon(Queue<Seed> seedsForCon) {
-        this.seedsForCon = seedsForCon;
-    }
 
-    public void setSeeds(Queue<Seed> seeds) {
-        this.seeds = seeds;
-    }
-
-    public void setURLListFormSeed(ArrayList<URL> URLListFormSeed) {
-        this.URLListFormSeed = URLListFormSeed;
-    }
 
     public GetAllURL(){
         super();
-        this.URLListFormSeed=new ArrayList<URL>();
-        this.seedsForCon=new LinkedList<Seed>();
-        this.seeds=new LinkedList<Seed>();
+        this.URLListFormAHref=new ArrayList<URL>();
         this.URLs=new LinkedList<URL>();
     }
 
@@ -99,15 +82,26 @@ public class GetAllURL {
 
     public ArrayList<URL> traverse(ArrayList<URL> urlList){
         int iurlSeedId=0;
+        int idocSize=0;
+        int icycle=0;
+        int iurlValue=0;
+        int ipageContentValue=0;
         int iurlStatus=0;
         String surl="";
+        String slastCrawlerTime="";
         Db db=new Db();
+
         Iterator iterator=urlList.iterator();
         while (iterator.hasNext()){
             URL url=(URL)iterator.next();
 
             iurlSeedId=url.getSeedId();
             iurlStatus=url.getURLStatus();
+            idocSize=url.getDocsize();
+            icycle=url.getCycle();
+            iurlValue=url.getURLValue();
+            ipageContentValue=url.getPageContentValue();
+            slastCrawlerTime=url.getLastCrawlerTime();
             surl=url.getURL();
 
             this.getURLs().add(url);         //取出单个url实体，加入URLs队列中
@@ -116,9 +110,16 @@ public class GetAllURL {
             boolean isConnected=true;
             Document document=null;
             try {
+
                 URL url=this.getURLs().poll();
-                surl=url.getURL();
                 iurlSeedId=url.getSeedId();
+                iurlStatus=url.getURLStatus();
+                idocSize=url.getDocsize();
+                icycle=url.getCycle();
+                iurlValue=url.getURLValue();
+                ipageContentValue=url.getPageContentValue();
+                slastCrawlerTime=url.getLastCrawlerTime();
+                surl=url.getURL();
 
                 document=Jsoup.connect(surl).timeout(10000).get();
 
@@ -137,7 +138,8 @@ public class GetAllURL {
                         /*
                          *修改Docsize，lastcrawlertime，urlstatus属性
                          */
-                        this.getURLListFormSeed().add(url);
+                        this.getURLListFormAHref().add(url);
+                        db.insertURL(url);
                     }
                 }
             }
@@ -146,7 +148,7 @@ public class GetAllURL {
 
 
 
-        return this.getURLListFormSeed();
+        return this.getURLListFormAHref();
     }
     /**
      *遍历seedURL中的所有超链接。
