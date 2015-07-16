@@ -12,17 +12,19 @@ import java.util.Iterator;
 /**
  * Created by Two_Cong on 15/07/07.
  */
-public class TestAction implements Action {
+public class TestAction{
     public String execute() throws Exception{
 
         Db db=new Db();
         GetAllURL getAllURL=new GetAllURL();
         db.sendSeedToURL();
+
         if (!db.getAllURL().isEmpty()){
            getAllURL.traverse(db.getAllURL());
             return  "success";
         }
         return "error";
+
 //        while (!db.getAllURL().isEmpty()){
 //            getAllURL.traverse(db.getAllURL());
 //        }

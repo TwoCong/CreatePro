@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import DAO.DownLoadFile;
 /**
  * Created by Two_Cong on 15/07/06.
  *
@@ -104,6 +104,10 @@ public class GetAllURL {
             slastCrawlerTime=url.getLastCrawlerTime();
             surl=url.getURL();
 
+//            DownLoadFile downLoadFile=new DownLoadFile();
+//            //下载网页
+//            downLoadFile.downloadFile(surl);
+
             this.getURLs().add(url);         //取出单个url实体，加入URLs队列中
         }
         while (!this.getURLs().isEmpty()){
@@ -123,7 +127,7 @@ public class GetAllURL {
                 surl=url.getURL();
 
 
-                document=Jsoup.connect(surl).timeout(100000).get();
+                document=Jsoup.connect(surl).timeout(10000).get();
                 db.updateURLStatus(url);
 
             }catch (Exception e){
