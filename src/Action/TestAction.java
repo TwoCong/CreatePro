@@ -19,16 +19,16 @@ public class TestAction{
         GetAllURL getAllURL=new GetAllURL();
         db.sendSeedToURL();
 
-        if (!db.getAllURL().isEmpty()){
-           getAllURL.traverse(db.getAllURL());
-            return  "success";
-        }
-        return "error";
-
-//        while (!db.getAllURL().isEmpty()){
-//            getAllURL.traverse(db.getAllURL());
+//        if (!db.getAllURL().isEmpty()){
+//           getAllURL.traverse(db.getAllURL());
+//            return  "success";
 //        }
-//        return "success";
+//        return "error";
+
+        while (!db.getAllURL().isEmpty()){
+            getAllURL.traverse(db.getAllURL());
+        }
+        return "success";
     }
 }
 

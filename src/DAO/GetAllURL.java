@@ -108,6 +108,7 @@ public class GetAllURL {
 //            //下载网页
 //            downLoadFile.downloadFile(surl);
 
+
             this.getURLs().add(url);         //取出单个url实体，加入URLs队列中
         }
         while (!this.getURLs().isEmpty()){

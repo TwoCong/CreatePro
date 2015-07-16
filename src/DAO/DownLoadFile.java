@@ -51,6 +51,8 @@ public class DownLoadFile {
     /*
      * 下载url指向的网页
      */
+
+
      public String downloadFile(String url){
          String filePath=null;
          //1、生成HttpClient对象，并设置参数
