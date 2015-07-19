@@ -16,6 +16,7 @@ import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import DAO.DownLoadFile;
+
 /**
  * Created by Two_Cong on 15/07/06.
  *
@@ -52,7 +53,12 @@ public class GetAllURL {
     }
 
 
-    // judge url
+    /**
+     * judge url
+     * @return
+     * @param url  需要进行判断
+     * @oaram dnLimite 对应seed的域名限制
+     */
     private boolean isURL(String url,String dnLimite) {
         try {
             String res=dnLimite;
@@ -70,16 +76,16 @@ public class GetAllURL {
             return false;
         }
     }
-    /*
-     *遍历URL表中所有超链接
-     * 返回 ArrayList<URL>
+    /**
+     * 遍历URL表中所有超链接
+     * @return  ArrayList<URL>
+     * @param  urlList 从URL表中读出的URL数组
      *     URLSTATUS =0, 没有爬过，新网页
      *               =1，爬过，
      *               =2：重建索引网页
      *               =3: 建立索引时，都将其置3
      *               =4: 已索引的网页进行了更新
      */
-
     public ArrayList<URL> traverse(ArrayList<URL> urlList){
         int iurlSeedId=0;
         int idocSize=0;
@@ -128,7 +134,7 @@ public class GetAllURL {
                 surl=url.getURL();
 
 
-                document=Jsoup.connect(surl).timeout(10000).get();
+                document=Jsoup.connect(surl).timeout(1000).get();
                 db.updateURLStatus(url);
 
             }catch (Exception e){
@@ -159,67 +165,6 @@ public class GetAllURL {
 
         return this.getURLListFormAHref();
     }
-    /**
-     *遍历seedURL中的所有超链接。
-     * 返回   URLList
-     *
-     */
-//    public ArrayList<URL> traverse(ArrayList<Seed> seedList)  {
-//        Db db=new Db();
-//        String seedURL="";
-//        int seedId=0;
-//        String seedSiteName="";
-//        String seedDnLimite="";  //域名限制
-//        Iterator iterator=seedList.iterator();
-//        while (iterator.hasNext()){
-//            Seed seed=(Seed)iterator.next();
-//            seedURL=seed.getURL();
-//            seedId=seed.getSeedId();
-//            seedSiteName=seed.getSiteName();
-//            seedDnLimite=seed.getDnLimite();   //获取到了当前seed的所有信息。
-//            this.getSeeds().add(seed);     // 加入到seed队列中,便于后面进行一个一个取出。
-//
-//        }
-//        while(!this.getSeeds().isEmpty()){
-//            boolean flag=true;
-//            Document document=null;
-//
-//            try {
-//                Seed seed=this.getSeeds().poll();
-//                seedURL=seed.getURL();
-//                seedId=seed.getSeedId();
-//                seedSiteName=seed.getSiteName();
-//                seedDnLimite=seed.getDnLimite();
-//                document=Jsoup.connect(seedURL).timeout(10000).get();
-//            }catch (Exception e){
-//                e.printStackTrace();
-//                flag=false;
-//            }
-//            if(flag){
-//                Elements elements=document.select("a.Normal");
-//                for (Element e : elements){
-//                    String s=e.attr("abs:href");
-//
-//                    if (isURL(s,seedDnLimite)&&!db.getAllUrl().contains(s)){
-//                        URL url=new URL();
-//                        url.setURL(s);
-//                        url.setSeedId(seedId);
-//
-//                        //
-//                        //之后加入Docsize以及其他属性。
-//                        //
-//                        this.getURLListFormSeed().add(url);
-//                        db.insertURL(url);
-//                    }
-//                }
-//
-//            }
-//
-//        }
-//
-//
-//    return this.getURLListFormSeed();
-//    }
 
 
 }

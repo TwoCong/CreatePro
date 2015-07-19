@@ -14,6 +14,7 @@ import Model.*;
 public class Db {
     Connection conn;
     PreparedStatement pstmt;
+    ;
 
     public Db(){
         try{
@@ -32,7 +33,40 @@ public class Db {
             return false;
         }
     }
+    /**
+     * 释放语意集与结果集
+     * @return
+     * @param  resultSet
+     * @param  pstmt
+     * 后创建的先释放
+     */
+    public void releaseSource(ResultSet resultSet,PreparedStatement pstmt) {
+        if (resultSet != null) {
+            try {
+                resultSet.close();
+                resultSet = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            releasePstmt(pstmt);
+        }
+    }
 
+    /**
+     * 释放 PreparedStatement
+     * @return
+     * @param pstmt
+     */
+    public void releasePstmt(PreparedStatement pstmt){
+        if (pstmt != null){
+            try {
+                pstmt.close();
+                pstmt = null;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
 
 
     /*
@@ -43,17 +77,18 @@ public class Db {
     ///status=0 表示该seed未被爬过，加入ArrayList
 
     public ArrayList<Seed> getAllSeed() {
+        ResultSet resultSet;
         try{
             pstmt=conn.prepareStatement("select * from seed where STATUS=0");
-            ResultSet rs=pstmt.executeQuery();
+            resultSet=pstmt.executeQuery();
             ArrayList<Seed> seedList=new ArrayList<Seed>();
-            while(rs.next()){
+            while(resultSet.next()){
                 Seed seed=new Seed();
-                seed.setSeedId(rs.getInt(1));
-                seed.setURL(rs.getString(2));
-                seed.setSiteName(rs.getString(3));
-                seed.setDnLimite(rs.getString(4));
-                seed.setStatus(rs.getByte(5));
+                seed.setSeedId(resultSet.getInt(1));
+                seed.setURL(resultSet.getString(2));
+                seed.setSiteName(resultSet.getString(3));
+                seed.setDnLimite(resultSet.getString(4));
+                seed.setStatus(resultSet.getByte(5));
                 seedList.add(seed);
             }
             return seedList;
@@ -61,6 +96,7 @@ public class Db {
             e.printStackTrace();
             return null;
         }
+
     }
 
     /*
@@ -68,15 +104,15 @@ public class Db {
     * 返回URL表 ArrayList<URL>
     */
     public  ArrayList<URL> sendSeedToURL(){
+        ResultSet resultSet;
         try{
             getAllSeed();
-            ResultSet resultSet=pstmt.executeQuery();
+            resultSet=pstmt.executeQuery();
             while(resultSet.next()){
                 URL url=new URL();
                 url.setSeedId(resultSet.getInt(1));
                 url.setURL(resultSet.getString(2));
                 url.setURLStatus(resultSet.getByte(5));
-
                 /*
                  *来自seed表的条目(URL)还需要修改
                  *Docsize,lastcrawlertime,cycle,urlvalue,pagecontentvalue  属性的值
@@ -98,9 +134,6 @@ public class Db {
                 url1.setPageContentValue(resultSet1.getInt(8));
                 url1.setURLStatus(resultSet1.getInt(9));
             }
-
-
-
             return urlList;
         }catch (Exception e){
             e.printStackTrace();
@@ -112,12 +145,13 @@ public class Db {
     //获取Status=0的网页的URL
     //
     public ArrayList getAllSeedUrl() {
+        ResultSet resultSet;
         try{
             pstmt=conn.prepareStatement("select url from seed where STATUS=0");
-            ResultSet rs=pstmt.executeQuery();
+            resultSet=pstmt.executeQuery();
             ArrayList al=new ArrayList();
-            while(rs.next()){
-                al.add(rs.getString(1));
+            while(resultSet.next()){
+                al.add(resultSet.getString(1));
             }
             return al;
         }catch(Exception e){
@@ -130,17 +164,18 @@ public class Db {
     //
 
     public Seed findSeed(int seedId){
+        ResultSet resultSet;
         try{
             pstmt=conn.prepareStatement("SELECT * FROM seed WHERE SeedId=?");
             pstmt.setInt(1, seedId);
-            ResultSet rs=pstmt.executeQuery();
+            resultSet=pstmt.executeQuery();
             Seed seed=new Seed();
-            if(rs.next()){
-                seed.setSeedId(rs.getInt(1));
-                seed.setURL(rs.getString(2));
-                seed.setSiteName(rs.getString(3));
-                seed.setDnLimite(rs.getString(4));
-                seed.setStatus(rs.getByte(5));
+            if(resultSet.next()){
+                seed.setSeedId(resultSet.getInt(1));
+                seed.setURL(resultSet.getString(2));
+                seed.setSiteName(resultSet.getString(3));
+                seed.setDnLimite(resultSet.getString(4));
+                seed.setStatus(resultSet.getByte(5));
                 return seed;
             }
             return null;
@@ -153,15 +188,17 @@ public class Db {
     //通过seedurl找到DNLIMITE
     //
     public String getURLRestrict(String seedURL) {
+        ResultSet resultSet;
         try{
             pstmt=conn.prepareStatement("select DNLIMITE from seed where URL=?");
             pstmt.setString(1, seedURL);
-            ResultSet rs=pstmt.executeQuery();
-            return rs.getString(1);
+            resultSet=pstmt.executeQuery();
+            return resultSet.getString(1);
         }catch(Exception e){
             e.printStackTrace();
             return null;
         }
+
     }
 
     /*
@@ -172,7 +209,8 @@ public class Db {
      */
 
     public boolean insertURL(URL url) {
-    try{
+        ResultSet resultSet;
+        try{
             pstmt=conn.prepareStatement("insert into URL (SEEDID,URL,DOCSIZE,LASTCRAWLERTIME,CYCLE,URLVALUE,PAGECONTENTVALUE,URLSTATUS) values(?,?,?,?,?,?,?,?)");
             pstmt.setInt(1, url.getSeedId());
             pstmt.setString(2, url.getURL());
@@ -183,32 +221,31 @@ public class Db {
             pstmt.setInt(7, url.getPageContentValue());
             pstmt.setInt(8, url.getURLStatus());
             pstmt.executeUpdate();
-            pstmt.close();
-
-
-        return true;
+            return true;
         }catch(Exception e){
             e.printStackTrace();
             return false;
+        }finally {
+           releasePstmt(pstmt);
         }
     }
     public ArrayList<URL> getAllURL(){
+        ResultSet resultSet;
         try{
             pstmt=conn.prepareStatement("select * from URL WHERE URLSTATUS=0");
-            ResultSet rs=pstmt.executeQuery();
+            resultSet=pstmt.executeQuery();
             ArrayList<URL> URLList=new ArrayList<URL>();
-            while(rs.next()){
+            while(resultSet.next()){
                 URL url=new URL();
-                url.setURLId(rs.getInt(1));
-                url.setSeedId(rs.getInt(2));
-                url.setURL(rs.getString(3));
-                url.setDocsize(rs.getInt(4));
-                url.setLastCrawlerTime(rs.getString(5));
-                url.setCycle(rs.getInt(6));
-                url.setURLValue(rs.getInt(7));
-                url.setPageContentValue(rs.getInt(8));
-                url.setURLStatus(rs.getInt(9));
-
+                url.setURLId(resultSet.getInt(1));
+                url.setSeedId(resultSet.getInt(2));
+                url.setURL(resultSet.getString(3));
+                url.setDocsize(resultSet.getInt(4));
+                url.setLastCrawlerTime(resultSet.getString(5));
+                url.setCycle(resultSet.getInt(6));
+                url.setURLValue(resultSet.getInt(7));
+                url.setPageContentValue(resultSet.getInt(8));
+                url.setURLStatus(resultSet.getInt(9));
                 URLList.add(url);
             }
             return URLList;
@@ -222,13 +259,12 @@ public class Db {
      * set URLStatus=1
      */
     public void updateURLStatus(URL url){
+        ResultSet resultSet;
         try{
             pstmt=conn.prepareStatement("update URL set URLSTATUS=1 WHERE URLID=?");
             pstmt.setInt(1, url.getURLId());
             pstmt.executeUpdate();
             pstmt.close();
-
-
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -239,17 +275,20 @@ public class Db {
     //得到url表中所有的url
     //
     public ArrayList getAllUrl() {
+        ResultSet resultSet;
         try{
             pstmt=conn.prepareStatement("select url from URL");
-            ResultSet rs=pstmt.executeQuery();
+            resultSet=pstmt.executeQuery();
             ArrayList al=new ArrayList();
-            while(rs.next()){
-                al.add(rs.getString(1));
+            while(resultSet.next()){
+                al.add(resultSet.getString(1));
             }
             return al;
         }catch(Exception e){
             e.printStackTrace();
             return null;
+        }finally {
+            releasePstmt(pstmt);
         }
     }
 

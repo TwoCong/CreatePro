@@ -12,23 +12,26 @@ import java.util.Iterator;
 /**
  * Created by Two_Cong on 15/07/07.
  */
-public class TestAction{
+public class TestAction implements Action{
     public String execute() throws Exception{
 
         Db db=new Db();
         GetAllURL getAllURL=new GetAllURL();
         db.sendSeedToURL();
 
-//        if (!db.getAllURL().isEmpty()){
-//           getAllURL.traverse(db.getAllURL());
-//            return  "success";
-//        }
-//        return "error";
+        DownLoadFile downLoadFile=new DownLoadFile();
+        downLoadFile.downloadPageByGetMethod("http://www.baidu.com");
 
-        while (!db.getAllURL().isEmpty()){
-            getAllURL.traverse(db.getAllURL());
+        if (!db.getAllURL().isEmpty()){
+           getAllURL.traverse(db.getAllURL());
+            return  "success";
         }
-        return "success";
+        return "error";
+
+//        while (!db.getAllURL().isEmpty()){
+//            getAllURL.traverse(db.getAllURL());
+//        }
+//        return SUCCESS;
     }
 }
 

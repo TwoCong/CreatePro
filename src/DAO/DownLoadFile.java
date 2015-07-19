@@ -1,96 +1,101 @@
 package DAO;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.Scanner;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-
-import java.io.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 
 /**
  * Created by Two_Cong on 15/07/16.
  */
-public class DownLoadFile {
-    /*
-     *根据URL和网页的类型生成所需要保存的网页的文件名，去除URL中的非文件名字符
-     */
-    public String getFileNameByUrl(String url,String contentType){
-        //去除http://
-        url=url.substring(7);
-        //text/html类型
-        if(contentType.indexOf("html")!=-1){
-            url=url.replaceAll("[\\?/:*|<>\"]","_")+".html";
-            return url;
-        }
-        //application/pdf类型
-        else {
-            url=url.replaceAll("[\\?/:*|<>\"]","_")+"."+contentType.substring(contentType.lastIndexOf("/")+1);
-            return url;
+
+//本类用于将指定url对应的网页下载至本地一个文件。
+public  class DownloadFile {
+
+    // 将url中的特殊字符用下划线代替
+    private static String getFileName(String url) {
+        url = url.substring(7);
+        String fileName = url.replaceAll("[\\?:*|<>\"/]", "_") + ".html";
+        return fileName;
+    }
+    //将输入流中的内容输出到path指定的路径，fileName指定的文件名
+    private static void saveToFile(String path, String fileName, InputStream is) {
+        Scanner sc = new Scanner(is);
+        Writer os = null;
+        try {
+            os = new PrintWriter(path + fileName);
+            while (sc.hasNext()) {
+                os.write(sc.nextLine());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (sc != null) {
+                sc.close();
+            }
+            if (os != null) {
+                try{
+                    os.flush();
+                    os.close();
+                }catch(IOException e){
+                    e.printStackTrace();
+                    System.out.println("输出流关闭失败！");
+                }
+            }
         }
     }
 
-    /*
-     * 保存网页字节数组到本地文件，filePath为要保存的文件的相对地址
-     */
-    public void saveToLocal(byte[] data,String filePath){
-        try {
-            DataOutputStream outputStream=new DataOutputStream(new FileOutputStream(new File(filePath)));
-            for (int i=0;i<data.length; i++){
-                outputStream.write(data[i]);
+
+    public static void downloadPageByGetMethod(String url) throws IOException {
+        // 1、通过HttpGet获取到response对象
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        // 注意，必需要加上http://的前缀，否则会报：Target host is null异常。
+        HttpGet httpGet = new HttpGet(url);
+        CloseableHttpResponse response = httpClient.execute(httpGet);
+
+        InputStream is = null;
+        if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+            try {
+                // 2、获取response的entity。
+                HttpEntity entity = response.getEntity();
+
+                // 3、获取到InputStream对象，并对内容进行处理
+                is = entity.getContent();
+
+                String fileName = getFileName(url);
+                saveToFile("/Users/Two_Cong/IdeaProjects/CreatePro/web/Html/", fileName, is);
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } finally {
+
+                if (is != null) {
+                    is.close();
+                }
+                if (response != null) {
+                    response.close();
+                }
             }
-            outputStream.flush();
-            outputStream.close();
+        }
+    }
+    public static void main(String[] args){
+        try {
+            DownloadFile.downloadPageByGetMethod("http://www.baidu.com");
         }catch (IOException e){
             e.printStackTrace();
         }
     }
 
-    /*
-     * 下载url指向的网页
-     */
-
-
-     public String downloadFile(String url){
-         String filePath=null;
-         //1、生成HttpClient对象，并设置参数
-         HttpClient httpClient=new HttpClient();
-         //设置HTTP连接超时5s
-         httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
-         //2、生成GetMethod对象并设置参数
-
-         GetMethod getMethod=new GetMethod();
-         //设置get请求超时5s
-         getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT,5000);
-         //设置请求重试处理
-         getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,new DefaultHttpMethodRetryHandler());
-         //3、执行HTTP GET请求
-         try {
-             int statusCode = httpClient.executeMethod(getMethod);
-             //判断访问的状态码
-             if (statusCode != HttpStatus.SC_OK){
-                 filePath=null;
-             }
-
-             //4、处理HTTP响应内容
-             byte[] responseBody = getMethod.getResponseBody();     //读取为字节数组
-             //根据网页url生成保存时的文件名
-             filePath="Two_Cong:Users\\Two_Cong\\IdeaProjects\\CreatePro\\web\\Html\\"+getFileNameByUrl(url,getMethod.getResponseHeader("Content-Type").getValue());
-             saveToLocal(responseBody,filePath);
-         }catch (HttpException e){
-             //可能是协议不对或者返回内容有问题
-             e.printStackTrace();
-         }catch (IOException e){
-             //网络异常
-             e.printStackTrace();
-         }finally {
-             //释放连接
-             getMethod.releaseConnection();
-         }
-         return filePath;
-
-
-     }
 }
+

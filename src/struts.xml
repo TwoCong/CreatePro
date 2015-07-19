@@ -9,7 +9,6 @@
         <package name="default" namespace="/" extends="struts-default">
                 <action name="Test" class="Action.TestAction">
                         <result name="success">/index.jsp</result>
-                        <result name="error">/home.jsp</result>
                 </action>
         </package>
 </struts>
