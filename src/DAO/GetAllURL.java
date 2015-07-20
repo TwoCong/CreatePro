@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import DAO.DownLoadFile;
+import DAO.DownloadFile;
 
 /**
  * Created by Two_Cong on 15/07/06.
@@ -86,13 +86,14 @@ public class GetAllURL {
      *               =3: 建立索引时，都将其置3
      *               =4: 已索引的网页进行了更新
      */
-    public ArrayList<URL> traverse(ArrayList<URL> urlList){
+    public ArrayList<URL> traverse(ArrayList<URL> urlList) throws IOException {
         int iurlSeedId=0;
         int idocSize=0;
         int icycle=0;
         int iurlValue=0;
         int ipageContentValue=0;
         int iurlStatus=0;
+        int iurlId=0;
         String surl="";
         String slastCrawlerTime="";
         Db db=new Db();
@@ -109,10 +110,6 @@ public class GetAllURL {
             ipageContentValue=url.getPageContentValue();
             slastCrawlerTime=url.getLastCrawlerTime();
             surl=url.getURL();
-
-//            DownLoadFile downLoadFile=new DownLoadFile();
-//            //下载网页
-//            downLoadFile.downloadFile(surl);
 
 
             this.getURLs().add(url);         //取出单个url实体，加入URLs队列中
@@ -153,8 +150,15 @@ public class GetAllURL {
                         /*
                          *修改Docsize，lastcrawlertime，urlstatus属性
                          */
+
+
                         this.getURLListFormAHref().add(url);
                         db.insertURL(url);
+
+                        iurlId=db.findUrlId(iurlSeedId,s);
+                        DownloadFile downLoadFile=new DownloadFile();
+                        //下载网页
+                        downLoadFile.downloadPageByGetMethod(s,iurlId);
                     }
                 }
             }

@@ -19,9 +19,6 @@ public class TestAction implements Action{
         GetAllURL getAllURL=new GetAllURL();
         db.sendSeedToURL();
 
-        DownLoadFile downLoadFile=new DownLoadFile();
-        downLoadFile.downloadPageByGetMethod("http://www.baidu.com");
-
         if (!db.getAllURL().isEmpty()){
            getAllURL.traverse(db.getAllURL());
             return  "success";

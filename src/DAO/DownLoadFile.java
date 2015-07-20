@@ -28,6 +28,17 @@ public  class DownloadFile {
         String fileName = url.replaceAll("[\\?:*|<>\"/]", "_") + ".html";
         return fileName;
     }
+
+//    /**
+//     *  用urlId命名文件
+//     * @param urlId
+//     * @return fileName
+//     */
+//    private static String getFileName(int urlId){
+//        String fileName=urlId+".html";
+//        return fileName;
+//    }
+
     //将输入流中的内容输出到path指定的路径，fileName指定的文件名
     private static void saveToFile(String path, String fileName, InputStream is) {
         Scanner sc = new Scanner(is);
@@ -58,7 +69,7 @@ public  class DownloadFile {
     }
 
 
-    public static void downloadPageByGetMethod(String url) throws IOException {
+    public static void downloadPageByGetMethod(String url,int urlId) throws IOException {
         // 1、通过HttpGet获取到response对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
         // 注意，必需要加上http://的前缀，否则会报：Target host is null异常。
@@ -89,13 +100,7 @@ public  class DownloadFile {
             }
         }
     }
-    public static void main(String[] args){
-        try {
-            DownloadFile.downloadPageByGetMethod("http://www.baidu.com");
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
+
 
 }
 

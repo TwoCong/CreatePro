@@ -291,6 +291,25 @@ public class Db {
             releasePstmt(pstmt);
         }
     }
+    /**
+     * 查询urlId
+     * @param url
+     * @param seedId
+     * @return urlId
+     */
+    public int findUrlId(int seedId,String url){
+        ResultSet resultSet;
+        try {
+            pstmt=conn.prepareStatement("SELECT URLID FROM URL WHERE  seedId=? AND URL=?");
+            pstmt.setInt(1,seedId);
+            pstmt.setString(2, url);
+            resultSet=pstmt.executeQuery();
+            return resultSet.getInt(1);
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
 
 }
