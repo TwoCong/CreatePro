@@ -22,20 +22,20 @@ import org.apache.http.impl.client.HttpClients;
 //本类用于将指定url对应的网页下载至本地一个文件。
 public  class DownloadFile {
 
-    // 将url中的特殊字符用下划线代替
-    private static String getFileName(String url) {
-        url = url.substring(7);
-        String fileName = url.replaceAll("[\\?:*|<>\"/]", "_") + ".html";
+    /**
+     * 文件名格式：urlId_url.html
+     * @param urlId
+     * @return fileName
+     */
+//
+    private static String getFileName(int urlId) {
+        String fileName = urlId + ".html";
         return fileName;
     }
-
-//    /**
-//     *  用urlId命名文件
-//     * @param urlId
-//     * @return fileName
-//     */
-//    private static String getFileName(int urlId){
-//        String fileName=urlId+".html";
+ // private static String getFileName(String url,int urlId) {
+//        url = url.substring(7);
+//        String fileName = urlId +"_"+ url.replaceAll("[\\?:*|<>\"/]", "_") + ".html";
+////        String fileName = urlId + ".html";
 //        return fileName;
 //    }
 
@@ -85,7 +85,7 @@ public  class DownloadFile {
                 // 3、获取到InputStream对象，并对内容进行处理
                 is = entity.getContent();
 
-                String fileName = getFileName(url);
+                String fileName = getFileName(urlId);
                 saveToFile("/Users/Two_Cong/IdeaProjects/CreatePro/web/Html/", fileName, is);
             } catch (ClientProtocolException e) {
                 e.printStackTrace();

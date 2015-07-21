@@ -147,25 +147,21 @@ public class GetAllURL {
                         url.setURL(s);
                         url.setSeedId(iurlSeedId);
 
-                        /*
-                         *修改Docsize，lastcrawlertime，urlstatus属性
-                         */
-
+                         //修改Docsize，lastcrawlertime，urlstatus属性
 
                         this.getURLListFormAHref().add(url);
                         db.insertURL(url);
-
-                        iurlId=db.findUrlId(iurlSeedId,s);
+                        // 根据网址查询出urlId,用urlId命名网页名称
+                        // 下载网页
+                        URL url1=new URL();
+                        url1=db.findURL(s);
                         DownloadFile downLoadFile=new DownloadFile();
-                        //下载网页
-                        downLoadFile.downloadPageByGetMethod(s,iurlId);
+
+                        downLoadFile.downloadPageByGetMethod(s,url1.getURLId());
                     }
                 }
             }
         }
-
-
-
 
         return this.getURLListFormAHref();
     }

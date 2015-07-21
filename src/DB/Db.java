@@ -292,22 +292,33 @@ public class Db {
         }
     }
     /**
-     * 查询urlId
-     * @param url
-     * @param seedId
-     * @return urlId
+     * 根据surl查询出当前URL
+     * @param s
+     * @return URL
      */
-    public int findUrlId(int seedId,String url){
+    public URL findURL(String s){
         ResultSet resultSet;
         try {
-            pstmt=conn.prepareStatement("SELECT URLID FROM URL WHERE  seedId=? AND URL=?");
-            pstmt.setInt(1,seedId);
-            pstmt.setString(2, url);
+            pstmt=conn.prepareStatement("SELECT * FROM URL WHERE  URL=?");
+            pstmt.setString(1, s);
             resultSet=pstmt.executeQuery();
-            return resultSet.getInt(1);
+            URL url=new URL();
+            while (resultSet.next()){
+                url.setURLId(resultSet.getInt(1));
+                url.setSeedId(resultSet.getInt(2));
+                url.setURL(resultSet.getString(3));
+                url.setDocsize(resultSet.getInt(4));
+                url.setLastCrawlerTime(resultSet.getString(5));
+                url.setCycle(resultSet.getInt(6));
+                url.setURLValue(resultSet.getInt(7));
+                url.setPageContentValue(resultSet.getInt(8));
+                url.setURLStatus(resultSet.getInt(9));
+                return url;
+            }
+            return  null;
         }catch (Exception e){
             e.printStackTrace();
-            return 0;
+            return null;
         }
     }
 
