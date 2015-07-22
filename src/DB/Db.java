@@ -14,7 +14,7 @@ import Model.*;
 public class Db {
     Connection conn;
     PreparedStatement pstmt;
-    ;
+
 
     public Db(){
         try{
@@ -319,6 +319,23 @@ public class Db {
         }catch (Exception e){
             e.printStackTrace();
             return null;
+        }
+    }
+
+    //
+    //得到url表中FirsturlID
+    //
+    public int getFirstUrlID() {
+        ResultSet resultSet;
+        try{
+            pstmt=conn.prepareStatement("select  URLID from URL limit 1");
+            resultSet=pstmt.executeQuery();
+            return resultSet.getInt(1);
+        }catch(Exception e){
+            e.printStackTrace();
+            return 1;
+        }finally {
+            releasePstmt(pstmt);
         }
     }
 

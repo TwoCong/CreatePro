@@ -28,7 +28,7 @@ public  class DownloadFile {
      * @return fileName
      */
 //
-    private static String getFileName(int urlId) {
+    private static String setFileName(int urlId) {
         String fileName = urlId + ".html";
         return fileName;
     }
@@ -38,6 +38,7 @@ public  class DownloadFile {
 ////        String fileName = urlId + ".html";
 //        return fileName;
 //    }
+
 
     //将输入流中的内容输出到path指定的路径，fileName指定的文件名
     private static void saveToFile(String path, String fileName, InputStream is) {
@@ -85,7 +86,7 @@ public  class DownloadFile {
                 // 3、获取到InputStream对象，并对内容进行处理
                 is = entity.getContent();
 
-                String fileName = getFileName(urlId);
+                String fileName = setFileName(urlId);
                 saveToFile("/Users/Two_Cong/IdeaProjects/CreatePro/web/Html/", fileName, is);
             } catch (ClientProtocolException e) {
                 e.printStackTrace();

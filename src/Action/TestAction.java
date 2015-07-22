@@ -16,11 +16,16 @@ public class TestAction implements Action{
     public String execute() throws Exception{
 
         Db db=new Db();
+        ParseDocument pd = new ParseDocument();
+
         GetAllURL getAllURL=new GetAllURL();
         db.sendSeedToURL();
 
         if (!db.getAllURL().isEmpty()){
            getAllURL.traverse(db.getAllURL());
+        //
+            pd.resolveHtml();
+        //
             return  "success";
         }
         return "error";
