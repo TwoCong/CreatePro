@@ -86,6 +86,7 @@ public  class DownloadFile {
                 // 3、获取到InputStream对象，并对内容进行处理
                 is = entity.getContent();
 
+
                 String fileName = setFileName(urlId);
                 saveToFile("/Users/Two_Cong/IdeaProjects/CreatePro/web/Html/", fileName, is);
             } catch (ClientProtocolException e) {

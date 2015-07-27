@@ -24,7 +24,7 @@ public class TestAction implements Action{
         if (!db.getAllURL().isEmpty()){
            getAllURL.traverse(db.getAllURL());
         //
-            pd.resolveHtml();
+        //     pd.resolveHtml();
         //
             return  "success";
         }
