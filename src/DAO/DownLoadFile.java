@@ -1,18 +1,13 @@
 package DAO;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.util.Scanner;
-
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+
+import java.io.*;
+import java.util.Scanner;
 
 
 /**
@@ -27,20 +22,17 @@ public  class DownloadFile {
      * @param urlId
      * @return fileName
      */
-//
     private static String setFileName(int urlId) {
         String fileName = urlId + ".html";
         return fileName;
     }
- // private static String getFileName(String url,int urlId) {
-//        url = url.substring(7);
-//        String fileName = urlId +"_"+ url.replaceAll("[\\?:*|<>\"/]", "_") + ".html";
-////        String fileName = urlId + ".html";
-//        return fileName;
-//    }
 
-
-    //将输入流中的内容输出到path指定的路径，fileName指定的文件名
+    /**
+     * 将输入流中的内容输出到path指定的路径，fileName指定的文件名
+     * @param path
+     * @param fileName
+     * @param is
+     */
     private static void saveToFile(String path, String fileName, InputStream is) {
         Scanner sc = new Scanner(is);
         Writer os = null;
@@ -69,7 +61,12 @@ public  class DownloadFile {
         }
     }
 
-
+    /**
+     *
+     * @param url
+     * @param urlId
+     * @throws IOException
+     */
     public static void downloadPageByGetMethod(String url,int urlId) throws IOException {
         // 1、通过HttpGet获取到response对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -82,18 +79,16 @@ public  class DownloadFile {
             try {
                 // 2、获取response的entity。
                 HttpEntity entity = response.getEntity();
-
                 // 3、获取到InputStream对象，并对内容进行处理
                 is = entity.getContent();
-
-
                 String fileName = setFileName(urlId);
                 saveToFile("/Users/Two_Cong/IdeaProjects/CreatePro/web/Html/", fileName, is);
+
+                System.out.println("Html: "+fileName);
+
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } finally {
-
-
                 if (is != null) {
                     is.close();
                 }

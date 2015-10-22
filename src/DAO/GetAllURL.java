@@ -1,21 +1,17 @@
 package DAO;
 
 import DB.Db;
-import Model.*;
+import Model.URL;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import DAO.DownloadFile;
 
 /**
  * Created by Two_Cong on 15/07/06.
@@ -24,10 +20,11 @@ import DAO.DownloadFile;
  * 2、获取seed.url网页中的所有超链接网址，对其进行条件筛选，再存入URL表中。
  */
 public class GetAllURL {
-
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");   //获取当前日期，以“年份-月份-日期 时:分:秒”来显示
 
     private Queue<URL>  URLs;  //单个网页中的所有超链接
     private ArrayList<URL> URLListFormAHref;  //所有A[href]的url
+
     public ArrayList<URL> getURLListFormAHref() {
         return URLListFormAHref;
     }
@@ -43,15 +40,11 @@ public class GetAllURL {
     public void setURLs(Queue<URL> URLs) {
         this.URLs = URLs;
     }
-
-
-
     public GetAllURL(){
         super();
         this.URLListFormAHref=new ArrayList<URL>();
         this.URLs=new LinkedList<URL>();
     }
-
 
     /**
      * judge url
@@ -63,7 +56,6 @@ public class GetAllURL {
         try {
             String res=dnLimite;
             String rex="^[a-zA-Z]+://[^\\s]*"+res+"[^\\s]*";
-            //Pattern pattern = Pattern.compile("^[a-zA-z]+://[^\\s]*");
             Pattern pattern = Pattern.compile(rex);
             Matcher matcher = pattern.matcher(url);
             if (matcher.matches()) {
@@ -97,6 +89,10 @@ public class GetAllURL {
         String surl="";
         String slastCrawlerTime="";
         Db db=new Db();
+        DownloadFile downLoadFile = new DownloadFile();
+        FileOutTxt fileOutTxt = new FileOutTxt();
+        FileOperate fileOperate = new FileOperate();
+        ParseDocument parseDocument = new ParseDocument();
 
         Iterator iterator=urlList.iterator();
         while (iterator.hasNext()){
@@ -110,8 +106,6 @@ public class GetAllURL {
             ipageContentValue=url.getPageContentValue();
             slastCrawlerTime=url.getLastCrawlerTime();
             surl=url.getURL();
-
-
             this.getURLs().add(url);         //取出单个url实体，加入URLs队列中
         }
         while (!this.getURLs().isEmpty()){
@@ -120,7 +114,6 @@ public class GetAllURL {
             try {
 
                 URL url=this.getURLs().poll();
-
                 iurlSeedId=url.getSeedId();
                 iurlStatus=url.getURLStatus();
                 idocSize=url.getDocsize();
@@ -130,6 +123,8 @@ public class GetAllURL {
                 slastCrawlerTime=url.getLastCrawlerTime();
                 surl=url.getURL();
 
+                downLoadFile.downloadPageByGetMethod(surl, url.getURLId());
+                fileOutTxt.fileOutTxt(parseDocument.docParseShu(url.getURLId()),url.getURLId());
 
                 document=Jsoup.connect(surl).timeout(1000).get();
                 db.updateURLStatus(url);
@@ -147,17 +142,28 @@ public class GetAllURL {
                         url.setURL(s);
                         url.setSeedId(iurlSeedId);
 
-                         //修改Docsize，lastcrawlertime，urlstatus属性
+                         //修改urlstatus属性
+
+                        url.setLastCrawlerTime(df.format(new Date()));   //获取当前时间lastcrawlertime，1000-01-01 00:00:00——9999-12-31 23:59:59”
+
 
                         this.getURLListFormAHref().add(url);
                         db.insertURL(url);
-                        // 根据网址查询出urlId,用urlId命名网页名称
+                        // 根据网址s查询数据库得出urlId,用urlId命名网页名称
                         // 下载网页
                         URL url1=new URL();
-                        url1=db.findURL(s);
-                        DownloadFile downLoadFile=new DownloadFile();
+                        url1 = db.findURL(s);
 
-                        downLoadFile.downloadPageByGetMethod(s,url1.getURLId());
+                        downLoadFile.downloadPageByGetMethod(s, url1.getURLId());       //获取制定的url的urlId,下载网页，命名方式为urlId.html
+                        System.out.println("Downloadfile success!");
+                        //获取相应html文件的Docsize,并更新URL表
+                        idocSize = fileOperate.getDocsize(url1.getURLId()+".html");
+                        db.updateURLDocsize(idocSize,url1.getURLId());
+
+                        fileOutTxt.fileOutTxt(parseDocument.docParseShu(url1.getURLId()), url1.getURLId());
+                        System.out.println("file out to Txt success!");
+                        System.out.println("");
+
                     }
                 }
             }

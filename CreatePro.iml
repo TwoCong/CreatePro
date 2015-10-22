@@ -28,8 +28,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Struts 2" level="project" />
-    <orderEntry type="library" name="jsoup-1.8.1" level="project" />
-    <orderEntry type="library" name="commons-codec-1.9" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="lucence" level="project" />
   </component>
 </module>

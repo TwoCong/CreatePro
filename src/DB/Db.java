@@ -1,13 +1,13 @@
 package DB;
 
+import Model.Seed;
+import Model.URL;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Iterator;
-
-import Model.*;
 /**
  * Created by Two_Cong on 15/06/29.
  */
@@ -99,14 +99,14 @@ public class Db {
 
     }
 
-    /*
-    *将seed表中所有的url转移至URL表中
-    * 返回URL表 ArrayList<URL>
-    */
+    /**
+     * 将seed表中所有的 status=0 的url 转移至URL表中
+     * 返回URL表 ArrayList<URL>
+     */
     public  ArrayList<URL> sendSeedToURL(){
         ResultSet resultSet;
         try{
-            getAllSeed();
+            getAllSeed();       //status=0 表示该seed未被爬过，加入ArrayList
             resultSet=pstmt.executeQuery();
             while(resultSet.next()){
                 URL url=new URL();
@@ -203,9 +203,6 @@ public class Db {
 
     /*
      *对URL表进行的DB操作
-     *
-     *
-     *
      */
 
     public boolean insertURL(URL url) {
@@ -229,6 +226,11 @@ public class Db {
            releasePstmt(pstmt);
         }
     }
+
+    /**
+     * 获取URL表中所有URLSTATE为O的ArrayList<URL>
+     * @return
+     */
     public ArrayList<URL> getAllURL(){
         ResultSet resultSet;
         try{
@@ -255,8 +257,9 @@ public class Db {
         }
     }
 
-    /*
+    /**
      * set URLStatus=1
+     * @param url
      */
     public void updateURLStatus(URL url){
         ResultSet resultSet;
@@ -269,6 +272,25 @@ public class Db {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 根据urlId，更新对应url的docsize
+     * @param docSize
+     * @param urlId
+     */
+    public void updateURLDocsize(int docSize,int urlId){
+        ResultSet resultSet;
+        try{
+            pstmt=conn.prepareStatement("update URL set DOCSIZE=? WHERE URLID=?");
+            pstmt.setInt(1, docSize);
+            pstmt.setInt(2,urlId);
+            pstmt.executeUpdate();
+            pstmt.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
 
     //
@@ -322,9 +344,10 @@ public class Db {
         }
     }
 
-    //
-    //得到url表中FirsturlID
-    //
+    /**
+     * 得到url表中FirsturlID
+     * @return
+     */
     public int getFirstUrlID() {
         ResultSet resultSet;
         try{
