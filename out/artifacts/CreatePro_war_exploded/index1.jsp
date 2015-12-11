@@ -24,7 +24,10 @@
   <%
     HighLightKey highLight = new HighLightKey();
     String keyword =request.getParameter("keyword");
-
+    Result re = new Result();
+    re.showCode(keyword);
+    ArrayList contentL = new Result().showCode(keyword);
+    contentL.size();
     %>
   <h1><%=keyword %></h1>
   <%

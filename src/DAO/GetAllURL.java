@@ -160,6 +160,7 @@ public class GetAllURL {
                         idocSize = fileOperate.getDocsize(url1.getURLId()+".html");
                         db.updateURLDocsize(idocSize,url1.getURLId());
 
+
                         fileOutTxt.fileOutTxt(parseDocument.docParseShu(url1.getURLId()), url1.getURLId());
                         System.out.println("file out to Txt success!");
                         System.out.println("");

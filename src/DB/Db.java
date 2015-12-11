@@ -344,6 +344,40 @@ public class Db {
         }
     }
 
+
+    /**
+     * 获取所有docsize<500的网页的URLID
+     * @return
+     */
+    public ArrayList getEmptyDoc() {
+        ResultSet resultSet;
+        ArrayList UrlIdList = new ArrayList();
+        try{
+            pstmt = conn.prepareStatement("SELECT URLID FROM URL WHERE DOCSIZE <500");
+            resultSet = pstmt.executeQuery();
+            while(resultSet.next()){
+                UrlIdList.add(resultSet.getInt(1));
+            }
+            return  UrlIdList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return  null;
+        }
+    }
+    /**
+     * 删除docsize <500的网址（一般为空网页）
+     */
+    public void deleteEmptyDoc(){
+        ResultSet resultSet;
+        try{
+            pstmt = conn.prepareStatement("DELETE from URL WHERE DOCSIZE <500");
+            pstmt.executeUpdate();
+            pstmt.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 得到url表中FirsturlID
      * @return
@@ -353,6 +387,7 @@ public class Db {
         try{
             pstmt=conn.prepareStatement("select  URLID from URL limit 1");
             resultSet=pstmt.executeQuery();
+            resultSet.next();
             return resultSet.getInt(1);
         }catch(Exception e){
             e.printStackTrace();
@@ -362,6 +397,29 @@ public class Db {
         }
     }
 
+    /**
+     * 通过UrlId后去对应的URL
+     * @param UrlId
+     * @return
+     */
+    public String getUrl(int UrlId){
+        ResultSet resultSet;
+        try{
+            pstmt = conn.prepareStatement("select URL FROM URL where URLID=? ");
+            pstmt.setInt(1,UrlId);
+            resultSet = pstmt.executeQuery();
+            if (resultSet.next())
+                return  resultSet.getString(1);
+            else
+                return null;
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.print("getUrl  by URlId occurs error!");
+            return null;
+        }
+    }
+
 
 }
+
 
