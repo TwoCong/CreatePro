@@ -6,5 +6,6 @@
     <JAVADOC />
     <SOURCES />
     <jarDirectory url="file://$PROJECT_DIR$/web/lib" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/web/lib" recursive="false" />
   </library>
 </component>

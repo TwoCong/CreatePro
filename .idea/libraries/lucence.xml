@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="lucence">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/web/lib/lucence" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/web/lib/lucence" recursive="false" />
+  </library>
+</component>
