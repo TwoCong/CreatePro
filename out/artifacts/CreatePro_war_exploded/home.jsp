@@ -22,10 +22,12 @@
  	<div class="search-box">
  	<div class="logo"></div>
 
-	 	<form action="search" target="_blank" method="post">
+	 	<form action="index.jsp" target="_blank" method="post">
 	 		<input type="text" class="search-text" name="keyword"/>
 	 		<input type="submit" class="search-button" value=""/>
 	 	</form>
- 	</div>
+
+	 </div>
+	</div>
   </body>
 </html>

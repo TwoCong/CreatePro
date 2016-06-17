@@ -1,31 +1,40 @@
-import DAO.GetAllURL;
-import DB.Db;
+import DAO.IndexLucene;
+import DAO.Searcher;
 
 import java.io.IOException;
 
 /**
- * Created by Two_Cong on 15/09/05.
+ * Created by Administrator on 15/09/05.
  */
 public class CrawlerTest {
     public static void main(String[] args) throws IOException {
-//        //爬取网页----一遍
+        //爬取网页----一遍
+
 //        Db db = new Db();
 //        GetAllURL getAllURL = new GetAllURL();
 //        db.sendSeedToURL();     //将seed表中所有的 status=0 的url 转移至URL表中
 //        if (!db.getAllURL().isEmpty()) {            //URL表中存在URLSTATE为O的ArrayList<URL>
 //            getAllURL.traverse(db.getAllURL());     //对ArrayList<URL>进行遍历操作
 //        }
-        //爬取网页-------无数
-        Db db = new Db();
-        GetAllURL getAllURL = new GetAllURL();
-        db.sendSeedToURL();
-        while (!db.getAllURL().isEmpty()){
-            getAllURL.traverse(db.getAllURL());
-        }
+////        爬取网页-------无数
+//        Db db = new Db();
+//        GetAllURL getAllURL = new GetAllURL();
+//        db.sendSeedToURL();
+//        while (!db.getAllURL().isEmpty()){
+//            getAllURL.traverse(db.getAllURL());
+//        }
 
+//        try{
+//            java.net.URL url1 = new java.net.URL("sdxb.shu.edu.cn:8080");
+//            url1.openConnection();
+//        }catch(Exception e){
+//            System.out.println("链接无效");
+//        }
 
-
-//        //删除没有用的网页本地文件
+       // GetAllURL getAllURL = new GetAllURL();
+        //System.out.println(getAllURL.isURL("sdxb.shu.edu.cn:8080","1s"));
+//
+        //删除没有用的网页本地文件
 //        ArrayList emptyUrlId = new Db().getEmptyDoc();
 //        Iterator iterator =emptyUrlId.iterator();
 //        while (iterator.hasNext()){
@@ -41,17 +50,22 @@ public class CrawlerTest {
 //        new Db().deleteEmptyDoc();
 
 
-//        //建立索引
-//        IndexLucene indexLucene =new IndexLucene();
-//        indexLucene.createIndex();
-//        new Searcher().readAllIndexDocs();
+
+        //建立索引
+       IndexLucene indexLucene =new IndexLucene();
+        indexLucene.createIndex();
+        new Searcher().readAllIndexDocs();
 
 
-        //网页高亮测试
+//        //网页高亮测试
+//        System.out.print("请输入关键字: ");
+//        Scanner reader = new Scanner(System.in);
+//        String keyword = reader.nextLine();
 //        HighLightKey highLightKey = new HighLightKey();
+//
 //        Searcher searcher = new Searcher();
 //
-//         //
+//
 //        ArrayList contentList = searcher.searchIndex(keyword);
 //        for (int i=0;i<contentList.size();i++){
 //            Object content  = contentList.get(i);
@@ -61,12 +75,29 @@ public class CrawlerTest {
 //        System .out.println(" ");
 
 
-        ////测试索引
+
+
+
+////
+//       // 测试索引
 //        System.out.print("请输入关键字: ");
 //        Scanner reader = new Scanner(System.in);
 //        String keyword = reader.nextLine();
-//        Result result = new Result();
-//        System.out.print(result.showCode(keyword).size());
+//        ArrayList alSearch = new Searcher().searchIndex(keyword);
+
+
+
+
+
+
+//        System.out.println("**********");
+//        System.out.println("**********");
+//        System.out.println("**********");
+//        Iterator it = alSearch.iterator();
+//        while (it.hasNext()){
+//            String  s= it.next().toString();
+//            System.out.println(s);
+//        }
 
 
         /*

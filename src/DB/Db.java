@@ -96,7 +96,6 @@ public class Db {
             e.printStackTrace();
             return null;
         }
-
     }
 
     /**
@@ -212,7 +211,8 @@ public class Db {
             pstmt.setInt(1, url.getSeedId());
             pstmt.setString(2, url.getURL());
             pstmt.setInt(3, url.getDocsize());
-            pstmt.setString(4, url.getLastCrawlerTime());
+           // pstmt.setString(4, url.getLastCrawlerTime());
+            pstmt.setString(4, null);
             pstmt.setInt(5, url.getCycle());
             pstmt.setInt(6, url.getURLValue());
             pstmt.setInt(7, url.getPageContentValue());

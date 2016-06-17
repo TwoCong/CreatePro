@@ -16,6 +16,7 @@ public class Result {
             Object content  = contentList.get(i);
             //codeList.add(highLightKey.test_highlight((String)content,key));
         }
-        return codeList;
+//        return codeList;
+        return contentList;
     }
 }

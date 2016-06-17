@@ -4,6 +4,8 @@
 <%@ page import="DAO.Searcher" %>
 <%@ page import="DAO.HighLightKey" %>
 <%@ page import="DAO.Result" %>
+<%@ page import="java.lang.*" %>
+<%@ page import="java.util.Iterator" %>
 <%--
   Created by IntelliJ IDEA.
   User: Two_Cong
@@ -23,16 +25,27 @@
 <body>
   <%
     HighLightKey highLight = new HighLightKey();
-    String keyword =request.getParameter("keyword");
-    Result re = new Result();
-    re.showCode(keyword);
-    ArrayList contentL = new Result().showCode(keyword);
-    contentL.size();
+    String keyword = request.getParameter("keyword");
+//    ArrayList al1 = (ArrayList)session.getAttribute("al");
+   %> <%
+    ArrayList alSearch = new Searcher().searchIndex(keyword);
+    if (alSearch.size()>0){
+      Iterator iter = alSearch.iterator();
+      while(iter.hasNext()) {
+        String contentlist = iter.next().toString();
     %>
-  <h1><%=keyword %></h1>
+  <p><%=contentlist%>
+  </p>
+
   <%
-
-
+      }
+    }
+    else
+      {
+        %>
+        <a href="noFound.jsp">error</a>
+      <%
+      }
   %>
 
 </body>

@@ -20,13 +20,15 @@ public class ParseDocument implements SpliteLine{
      * @throws IOException
      */
     public static ArrayList<String> docParseShu(int urlId) throws IOException {
-        String path = "/Users/Two_Cong/IdeaProjects/CreatePro/web/Html/";
+ //       String path = "/Users/Two_Cong/IdeaProjects/CreatePro/web/Html/";
+        String path = "/Users/Two_Cong/Desktop/CreatePro/web/Html/";
         String fileName = urlId+".html";
         ArrayList<String> strArray = new ArrayList<String>();
         File input = new File(path+fileName);
         try{
             Document document = Jsoup.parse(input, "utf-8");
             Elements title = document.select("head>title");
+//            Elements title = document.select("span.head");
             String titleCon = title.text()+titleSpliteLine;
             String contentCon = document.text();    //将网页中的所有文本提取出来
             if ( contentCon.isEmpty() ){             //若提取出的文本为空，则将其对应的链接剔除掉，包括数据库、html,txt文本

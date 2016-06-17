@@ -1,10 +1,14 @@
 <component name="libraryTable">
   <library name="lucence">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/web/lib/lucence" />
+      <root url="jar://$PROJECT_DIR$/out/artifacts/CreatePro_war_exploded/lib/lucence/IKAnalyzer2012_V5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/artifacts/CreatePro_war_exploded/lib/lucence/lucene-memory-5.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/artifacts/CreatePro_war_exploded/lib/lucence/lucene-queryparser-5.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/artifacts/CreatePro_war_exploded/lib/lucence/lucene-core-5.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/artifacts/CreatePro_war_exploded/lib/lucence/lucene-analyzers-common-5.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/artifacts/CreatePro_war_exploded/lib/lucence/lucene-highlighter-5.3.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
-    <jarDirectory url="file://$PROJECT_DIR$/web/lib/lucence" recursive="false" />
   </library>
 </component>

@@ -1,4 +1,13 @@
 <%@ page language="java" import="java.util.*" contentType="text/html; charset=utf-8"%>
+<%@ page import="org.jsoup.Connection" %>
+<%@ page import="java.util.ArrayDeque" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="DAO.Searcher" %>
+<%@ page import="DAO.HighLightKey" %>
+<%@ page import="DAO.*" %>
+<%@ page import="java.lang.*" %>
+<%@ page import="java.util.Iterator" %>
+<%@ page import="Model.index" %>
 
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -87,7 +96,44 @@
 				out.print("<h1>很抱歉,没有找到与\""+keyword+"\"相关的网页.</h1>");
 			}
 			--%>
-			
+				<%
+					HighLightKey highLight = new HighLightKey();
+					String keyword = request.getParameter("keyword");
+              //    ArrayList al1 = (ArrayList)session.getAttribute("al");
+				%> <%
+				HighLightKey highLightKey = new HighLightKey();
+				ArrayList<index> alSearch = new Searcher().searchIndex(keyword);
+				if (alSearch.size()>0){
+					Iterator iter = alSearch.iterator();
+					while(iter.hasNext()) {
+						index index = (index)iter.next();
+						String contentlist = index.getContent();
+
+						String[] title = contentlist.split("\\*");
+						String urlList = index.getUrl();
+						String text = title[1];
+//						String text2 = highLightKey.test_highlight(text,keyword);
+
+						TextShow ts = new TextShow();
+						String text1 = ts.gettextfragmenter(text);
+						String[] keywords = {keyword};
+                        String text2 = ts.highlighter(text1,keywords);
+
+			%>
+				<div>
+					<a href=<%=urlList%>>	<%=title[0]%></a>
+				</div>
+				<div><%=text2%></div><br>
+				<%
+					}
+				}
+				else
+				{
+				%>
+				<a href="noFound.jsp">error</a>
+				<%
+					}
+				%>
 			</div>
 				<div class="span3">
 					<div class="sidebar">

@@ -39,6 +39,7 @@ public  class DownloadFile {
         try {
             os = new PrintWriter(path + fileName);
             while (sc.hasNext()) {
+
                 os.write(sc.nextLine());
             }
         } catch (FileNotFoundException e) {
@@ -82,7 +83,8 @@ public  class DownloadFile {
                 // 3、获取到InputStream对象，并对内容进行处理
                 is = entity.getContent();
                 String fileName = setFileName(urlId);
-                saveToFile("/Users/Two_Cong/IdeaProjects/CreatePro/web/Html/", fileName, is);
+ //               saveToFile("/Users/Two_Cong/IdeaProjects/CreatePro/web/Html/", fileName, is);
+                saveToFile("/Users/Two_Cong/Desktop/CreatePro/web/Html/", fileName, is);
 
                 System.out.println("Html: "+fileName);
 

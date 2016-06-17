@@ -5,11 +5,21 @@
         "http://struts.apache.org/dtds/struts-2.3.dtd">
 
 <struts>
-        <constant name="strust.devMode" value="true" />
+        <constant name="struts.devMode" value="false" />
         <package name="default" namespace="/" extends="struts-default">
+
                 <action name="search" class="Controller.SearchKey" method="execute">
                         <result name="success">index1.jsp</result>
                         <result name="error">noFound.jsp</result>
                 </action>
+
+
+
+                <action name="keyword" class="Controller.SearchKey" method="execute">
+                        <result name="success">index1.jsp</result>
+                        <result name="error">noFound.jsp</result>
+                </action>
+
+
         </package>
 </struts>

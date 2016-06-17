@@ -18,7 +18,8 @@ public class FileOutTxt {
      */
     public  static void fileOutTxt(ArrayList<String> input ,int outputName) throws IOException {
 
-        FileOutputStream fileOutputStream = new FileOutputStream("/Users/Two_Cong/IdeaProjects/CreatePro/web/txt/"+outputName+".txt",true);
+//        FileOutputStream fileOutputStream = new FileOutputStream("/Users/Two_Cong/IdeaProjects/CreatePro/web/txt/"+outputName+".txt",true);
+        FileOutputStream fileOutputStream = new FileOutputStream("/Users/Two_Cong/Desktop/CreatePro/web/txt/"+outputName+".txt",true);
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
         BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
         try {
